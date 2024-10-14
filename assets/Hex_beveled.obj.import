@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dpn1i7han3xqu"
+path="res://.godot/imported/Hex_beveled.obj-1effceee26c7ddeb04b027b1157facfa.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Hex_beveled.obj-1effceee26c7ddeb04b027b1157facfa.mesh"]
+
+source_file="res://assets/Hex_beveled.obj"
+dest_files=["res://.godot/imported/Hex_beveled.obj-1effceee26c7ddeb04b027b1157facfa.mesh", "res://.godot/imported/Hex_beveled.obj-1effceee26c7ddeb04b027b1157facfa.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
