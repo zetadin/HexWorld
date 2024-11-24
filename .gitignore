@@ -4,3 +4,8 @@
 
 # builds
 exports/
+
+*.apk
+*.apk.*
+*.tmp
+*.import

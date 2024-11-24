@@ -1,14 +1,74 @@
-[gd_scene load_steps=14 format=3 uid="uid://b1nxgpmj7oqby"]
+[gd_scene load_steps=17 format=3 uid="uid://b1nxgpmj7oqby"]
 
 [ext_resource type="ArrayMesh" uid="uid://dpn1i7han3xqu" path="res://assets/Hex_beveled.obj" id="1_n1m7s"]
-[ext_resource type="Script" path="res://scenes/hex_script.gd" id="1_xvkuu"]
 [ext_resource type="Script" path="res://scenes/world_script.gd" id="1_ypgc8"]
 [ext_resource type="Material" uid="uid://pk6g08gcour" path="res://assets/materials/Hex_Grass_material.tres" id="2_ao1jy"]
+[ext_resource type="Script" path="res://scenes/camera_3d.gd" id="2_rwg8j"]
 [ext_resource type="Shader" path="res://shaders/sea.gdshader" id="2_yyrm4"]
 [ext_resource type="Shape3D" uid="uid://b4j77fhbs2s1x" path="res://assets/collision_shapes/Hex_outer_cylinder.tres" id="3_jhg6e"]
 [ext_resource type="Material" uid="uid://bwewfjgm21hmr" path="res://assets/materials/Hex_Hill_material.tres" id="3_o2w3g"]
 [ext_resource type="Material" uid="uid://bkmbd3wlxdd8g" path="res://assets/materials/Hex_Mountain_material.tres" id="4_blpdv"]
 [ext_resource type="Material" uid="uid://blrevnfqgfddy" path="res://assets/materials/Hex_Forest_material.tres" id="5_h3pne"]
+[ext_resource type="Script" path="res://scenes/billboard_script.gd" id="11_5njpe"]
+
+[sub_resource type="GDScript" id="GDScript_xtdjs"]
+script/source = "extends StaticBody3D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	axis_lock_angular_x = true
+	axis_lock_angular_y = true
+	axis_lock_angular_z = true
+	axis_lock_linear_x = true
+	axis_lock_linear_y = false # only move up/down
+	axis_lock_linear_z = true
+	
+	## create area that handles mouse events
+	#var area = Area3D.new()
+	#var select_shape = CollisionShape3D.new()
+	#select_shape.shape = load(\"res://assets/collision_shapes/Hex_inner_cylinder.tres\")
+	#area.add_child(select_shape)
+	#area.input_ray_pickable = true
+	##area.input_event.connect(_on_area_3d_input_event) # hook up event listener
+	#add_child(area)
+	##print_debug(\"added area\")
+	
+	self.input_event.connect(_on_input_event)
+	
+	var collidable = CollisionShape3D.new()
+	collidable.shape = load(\"res://assets/collision_shapes/Hex_outer_cylinder.tres\")
+	self.add_child(collidable)
+	#print_debug(\"added collidable\")
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	# update position with constant_linear_velocity
+	self.position += delta * self.constant_linear_velocity
+	
+	# constrain vertical movement
+	if(self.position.y > 1):
+		self.position.y = 1
+		self.constant_linear_velocity.y = 0
+	elif(self.position.y < 0):
+		self.position.y = 0
+		self.constant_linear_velocity.y = 0
+
+
+
+func _on_input_event(camera: Node, event: InputEvent, event_position: Vector3, normal: Vector3, shape_idx: int) -> void:
+	if(event is InputEventMouseButton):
+		if(event.button_index == MOUSE_BUTTON_LEFT and event.pressed == true):
+			#print_debug(\"clicked\")
+			if(constant_linear_velocity.y<=0 and self.position.y<1):
+				self.constant_linear_velocity.y = 0.5
+			else:
+				self.constant_linear_velocity.y = -0.5
+
+			
+	pass # Replace with function body.
+"
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3dks6"]
 seed = 3
@@ -35,15 +95,19 @@ size = Vector2(20, 20)
 subdivide_width = 64
 subdivide_depth = 64
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_kao2w"]
+viewport_path = NodePath("Billboard/SubViewport")
+
 [node name="Root" type="Node"]
 script = ExtResource("1_ypgc8")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 5, 5, 5)
 current = true
+script = ExtResource("2_rwg8j")
 
 [node name="Hex_Example_row_0_0" type="StaticBody3D" parent="."]
-script = ExtResource("1_xvkuu")
+script = SubResource("GDScript_xtdjs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hex_Example_row_0_0"]
 shape = ExtResource("3_jhg6e")
@@ -54,7 +118,7 @@ surface_material_override/0 = ExtResource("2_ao1jy")
 
 [node name="Hex_Example_row_0_1" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0)
-script = ExtResource("1_xvkuu")
+script = SubResource("GDScript_xtdjs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hex_Example_row_0_1"]
 shape = ExtResource("3_jhg6e")
@@ -65,7 +129,7 @@ surface_material_override/0 = ExtResource("2_ao1jy")
 
 [node name="Hex_Example_row_0_2" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
-script = ExtResource("1_xvkuu")
+script = SubResource("GDScript_xtdjs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hex_Example_row_0_2"]
 shape = ExtResource("3_jhg6e")
@@ -76,7 +140,7 @@ surface_material_override/0 = ExtResource("3_o2w3g")
 
 [node name="Hex_Example_row_1_0" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0.866)
-script = ExtResource("1_xvkuu")
+script = SubResource("GDScript_xtdjs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hex_Example_row_1_0"]
 shape = ExtResource("3_jhg6e")
@@ -87,7 +151,7 @@ surface_material_override/0 = ExtResource("2_ao1jy")
 
 [node name="Hex_Example_row_1_1" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 0.866)
-script = ExtResource("1_xvkuu")
+script = SubResource("GDScript_xtdjs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hex_Example_row_1_1"]
 shape = ExtResource("3_jhg6e")
@@ -98,7 +162,7 @@ surface_material_override/0 = ExtResource("4_blpdv")
 
 [node name="Hex_Example_row_2_0" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, -1.49012e-08, 2.98023e-08, 1, 0, -7.45058e-09, 0, 1, 3, 0, 1.732)
-script = ExtResource("1_xvkuu")
+script = SubResource("GDScript_xtdjs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hex_Example_row_2_0"]
 shape = ExtResource("3_jhg6e")
@@ -114,3 +178,52 @@ light_color = Color(0.941176, 1, 1, 1)
 
 [node name="Sea" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_q2jf0")
+
+[node name="Billboard" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+billboard = 2
+texture = SubResource("ViewportTexture_kao2w")
+script = ExtResource("11_5njpe")
+
+[node name="SubViewport" type="SubViewport" parent="Billboard"]
+transparent_bg = true
+size = Vector2i(256, 64)
+
+[node name="BillboardText" type="RichTextLabel" parent="Billboard/SubViewport"]
+clip_contents = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -32.0
+offset_right = 128.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+bbcode_enabled = true
+text = "empty"
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="DubugText" type="RichTextLabel" parent="HUD"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+bbcode_enabled = true
+text = "blabfidabngqowem"
+fit_content = true
+scroll_active = false

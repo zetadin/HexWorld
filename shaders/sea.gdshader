@@ -10,7 +10,7 @@ uniform float wave_speed;
 void vertex() {
 	// Called for every vertex the material is visible on.
 	float t = TIME * wave_speed;
-	
+
 	float angle_in_rad = wave_angle/(2.0*PI);
 	vec2 wave_vec = vec2(cos(angle_in_rad), sin(angle_in_rad));
 	vec2 pos = vec2(VERTEX.x, VERTEX.z) + t*wave_vec;
@@ -21,7 +21,7 @@ void vertex() {
 	NORMAL.x = wave_height * neg_cos * wave_vec.x/wave_len;
 	NORMAL.z = wave_height * neg_cos * wave_vec.y/wave_len;
 	NORMAL.y = 1.0;
-	
+
 }
 
 void fragment() {
