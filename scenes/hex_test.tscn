@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://b1nxgpmj7oqby"]
+[gd_scene load_steps=18 format=3 uid="uid://b1nxgpmj7oqby"]
 
 [ext_resource type="ArrayMesh" uid="uid://dpn1i7han3xqu" path="res://assets/Hex_beveled.obj" id="1_n1m7s"]
 [ext_resource type="Script" path="res://scenes/world_script.gd" id="1_ypgc8"]
@@ -10,6 +10,7 @@
 [ext_resource type="Material" uid="uid://bkmbd3wlxdd8g" path="res://assets/materials/Hex_Mountain_material.tres" id="4_blpdv"]
 [ext_resource type="Material" uid="uid://blrevnfqgfddy" path="res://assets/materials/Hex_Forest_material.tres" id="5_h3pne"]
 [ext_resource type="Script" path="res://scenes/billboard_script.gd" id="11_5njpe"]
+[ext_resource type="PackedScene" uid="uid://hwysttj1472o" path="res://assets/joystick/virtual_joystick.tscn" id="11_78abx"]
 
 [sub_resource type="GDScript" id="GDScript_xtdjs"]
 script/source = "extends StaticBody3D
@@ -227,3 +228,7 @@ bbcode_enabled = true
 text = "blabfidabngqowem"
 fit_content = true
 scroll_active = false
+
+[node name="VirtualJoystick" parent="HUD" instance=ExtResource("11_78abx")]
+position = Vector2(1060, 556)
+scale = Vector2(0.3, 0.3)
